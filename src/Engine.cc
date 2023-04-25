@@ -116,6 +116,16 @@ Engine::Response Engine::fen(std::string fen, const int g) {
     return rep.str();
 }
 
+Engine::Response Engine::do_gtpmove(std::string move, const int g) {
+    auto vmove = move.replace(2, 1, "");
+    auto rep = std::ostringstream{};
+    auto success = get_position(g)->do_textmove(vmove);
+    if (!success) {
+        rep << "Illegal move";
+    }
+    return rep.str();
+}
+
 Engine::Response Engine::do_textmove(std::string move, const int g) {
     auto rep = std::ostringstream{};
     auto success = get_position(g)->do_textmove(move);
@@ -249,6 +259,25 @@ Engine::Response Engine::nn_direct_move(const int g) {
     const auto s = get_search(g);
 
     const auto move = s->nn_direct_move();
+    const auto success = p->do_move(move);
+#ifdef NDEBUG
+    (void) success;
+#endif
+    assert(success);
+
+    return rep.str();
+}
+
+Engine::Response Engine::gtp_move(const int g) {
+    auto rep = std::ostringstream{};
+    const auto p = get_position(g);
+    if (p->gameover(true)) {
+        return rep.str();
+    }
+
+    const auto s = get_search(g);
+
+    const auto move = s->gtp_move();
     const auto success = p->do_move(move);
 #ifdef NDEBUG
     (void) success;

@@ -118,6 +118,23 @@ void Search::play_simulation(Position &currpos, UCTNode *const node,
     node->decrement_threads();
 }
 
+Move Search::gtp_move() {
+    auto info = SearchInformation{};
+    auto setting = SearchSetting{};
+    think(setting, &info);
+
+    // Wait the threads running finish.
+    m_search_group->wait_to_join();
+
+    auto move = info.best_move;
+
+    if (info.plies < option<int>("random_plies_cnt")) {
+        move = info.prob_move;
+    }
+
+    return move;
+}
+
 Move Search::uct_move() {
     auto info = SearchInformation{};
     auto setting = SearchSetting{};
@@ -350,14 +367,16 @@ void Search::think(SearchSetting setting, SearchInformation *info) {
                     maxdepth = pv_depth;
                 }
                 const auto pv = UCT_Information::get_pvsrting(m_rootnode);
-                LOGGING << "info"
+/*                if (gtp == 0) {
+                  LOGGING << "info"
                             << ' ' << "depth" << ' ' << maxdepth
                             << ' ' << "time"  << ' ' << elapsed
                             << ' ' << "nodes" << ' ' << nodes
                             << ' ' << "score" << ' ' << int(score)
                             << ' ' << "pv"    << ' ' << pv
                             << std::endl;
-            }
+                }
+*/            }
         }
 
         decrement_threads();
@@ -376,15 +395,20 @@ void Search::think(SearchSetting setting, SearchInformation *info) {
         const auto draw_resign = get_draw_resign(color, m_setting.draw);
 
         if (option<bool>("ucci_response")) {
-            LOGGING << "bestmove" << ' ' << bestmove.to_string();
-            if (pondermove.valid()) {
+//            if (gtp == 1) {
+              LOGGING << "=" << ' ' << bestmove.to_string();
+              LOGGING << std::endl;
+/*            } else {
+              LOGGING << "bestmove" << ' ' << bestmove.to_string();
+              if (pondermove.valid()) {
                 LOGGING << ' ' << "ponder" << ' ' << pondermove.to_string();
-            }
-            if (!draw_resign.empty()) {
+              }
+              if (!draw_resign.empty()) {
                 LOGGING << ' ' << draw_resign;
+              }
+              LOGGING << std::endl;
             }
-            LOGGING << std::endl;
-        }
+*/        }
 
         if (info) {
             info->best_move = bestmove;

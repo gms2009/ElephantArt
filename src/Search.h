@@ -98,6 +98,7 @@ public:
 
     Move nn_direct_move();
     Move get_random_move();
+    Move gtp_move();
     Move uct_move();
     void think(SearchSetting setting, SearchInformation *info);
     void interrupt();

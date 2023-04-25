@@ -17,6 +17,7 @@
 */
 
 #include "ASCII.h"
+#include "GTP.h"
 #include "UCCI.h"
 #include "Selfplay.h"
 #include "config.h"
@@ -43,6 +44,10 @@ static void ascii_loop() {
     auto ascii = std::make_unique<ASCII>();
 }
 
+static void gtp_loop() {
+    auto gtp = std::make_unique<GTP>();
+}
+
 static void ucci_loop() {
     auto ucci = std::make_unique<UCCI>();
 }
@@ -58,13 +63,17 @@ int main(int argc, char **argv) {
     LOGGING << get_license();
 
     init_basic_parameters();
-
+        gtp_loop();
+/*
     if (option<std::string>("mode") == "ascii") {
         ascii_loop();
+    } else if (option<std::string>("mode") == "gtp") {
+        gtp_loop();
     } else if (option<std::string>("mode") == "ucci") {
         ucci_loop();
     } else if (option<std::string>("mode") == "selfplay") {
         selfplay_loop();
     }
+*/
     return 0;
 }

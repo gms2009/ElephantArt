@@ -41,12 +41,14 @@ public:
 
     Response gather_movelist(const int g = DEFUALT_POSITION);
     Response fen(std::string fen, const int g = DEFUALT_POSITION);
+    Response do_gtpmove(std::string move, const int g = DEFUALT_POSITION);
     Response do_textmove(std::string move, const int g = DEFUALT_POSITION);
     Response position(std::string pos, const int g = DEFUALT_POSITION);
     Response raw_nn(const int g = DEFUALT_POSITION);
     Response input_planes(const int g = DEFUALT_POSITION);
     Response history_board(const int g = DEFUALT_POSITION);
     Response nn_direct_move(const int g = DEFUALT_POSITION);
+    Response gtp_move(const int g = DEFUALT_POSITION);
     Response uct_move(const int g = DEFUALT_POSITION);
     Response get_maps();
     Response dump_collection(std::string filename = std::string{},
